@@ -11,3 +11,4 @@ The backend module hosts the .NET API and core application layers for the doctor
 - `src/Application`: Application layer commands/queries and DTOs.
 - `src/Domain`: Core domain entities and value objects.
 - `src/Infrastructure`: Data access implementations (currently in-memory).
+- `tests/Functional.Tests`: Selenium-based functional tests that drive the frontend UI.
