@@ -1,0 +1,13 @@
+<section class="panel">
+  <h2>Admin portal</h2>
+  <p class="muted">Manage tenants and view SSO provisioning status.</p>
+  <div class="empty" *ngIf="tenants.length === 0">No tenants configured.</div>
+  <div class="tenant-grid" *ngIf="tenants.length > 0">
+    <article *ngFor="let tenant of tenants">
+      <h3>{{ tenant.name }}</h3>
+      <p>Tenant ID: {{ tenant.id }}</p>
+      <p>Region: {{ tenant.region }}</p>
+      <span class="status">SSO: Connected</span>
+    </article>
+  </div>
+</section>

@@ -4,6 +4,6 @@ namespace DoctorAppointments.Application.Interfaces;
 
 public interface IAppointmentRepository
 {
-    Task<IReadOnlyList<Appointment>> GetUpcomingAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Appointment>> GetUpcomingAsync(string tenantId, CancellationToken cancellationToken);
     Task AddAsync(Appointment appointment, CancellationToken cancellationToken);
 }

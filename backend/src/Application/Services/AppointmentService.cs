@@ -9,15 +9,18 @@ namespace DoctorAppointments.Application.Services;
 public sealed class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _repository;
+    private readonly ITenantProvider _tenantProvider;
 
-    public AppointmentService(IAppointmentRepository repository)
+    public AppointmentService(IAppointmentRepository repository, ITenantProvider tenantProvider)
     {
         _repository = repository;
+        _tenantProvider = tenantProvider;
     }
 
     public async Task<IReadOnlyList<AppointmentSummary>> GetUpcomingAsync(CancellationToken cancellationToken)
     {
-        var appointments = await _repository.GetUpcomingAsync(cancellationToken);
+        var tenantId = _tenantProvider.GetTenantId();
+        var appointments = await _repository.GetUpcomingAsync(tenantId, cancellationToken);
 
         return appointments
             .Select(appointment => new AppointmentSummary(
@@ -33,6 +36,7 @@ public sealed class AppointmentService : IAppointmentService
 
     public async Task<AppointmentSummary> RequestAsync(AppointmentRequest request, CancellationToken cancellationToken)
     {
+        var tenantId = _tenantProvider.GetTenantId();
         var patientId = Guid.NewGuid();
         var appointmentId = Guid.NewGuid();
         var diagnosis = request.InitialDiagnosis is null
@@ -48,6 +52,7 @@ public sealed class AppointmentService : IAppointmentService
             appointmentId,
             patientId,
             patientName,
+            tenantId,
             request.ScheduledFor,
             request.Reason,
             AppointmentStatus.Requested,

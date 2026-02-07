@@ -4,23 +4,40 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AppointmentService } from './services/appointment.service';
 import { AppointmentRequest } from './models/appointment-request.model';
 import { AppointmentSummary } from './models/appointment-summary.model';
+import { Tenant } from './models/tenant.model';
+import { TenantContextService } from './services/tenant-context.service';
+import { TenantService } from './services/tenant.service';
+import { UserContextService } from './services/user-context.service';
+import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
+import { AdminPortalComponent } from './components/admin-portal/admin-portal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DoctorDashboardComponent,
+    AdminPortalComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   form: FormGroup;
   upcomingAppointments: AppointmentSummary[] = [];
+  tenants: Tenant[] = [];
   isSubmitting = false;
   errorMessage = '';
+  tenantForm: FormGroup;
+  userForm: FormGroup;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly appointmentService: AppointmentService
+    private readonly appointmentService: AppointmentService,
+    private readonly tenantService: TenantService,
+    private readonly tenantContext: TenantContextService,
+    private readonly userContext: UserContextService
   ) {
     this.form = this.formBuilder.group({
       firstName: ['', Validators.required],
@@ -31,10 +48,21 @@ export class AppComponent implements OnInit {
       diagnosisSummary: [''],
       diagnosisNotes: ['']
     });
+
+    this.tenantForm = this.formBuilder.group({
+      tenantId: [this.tenantContext.getTenantId(), Validators.required]
+    });
+
+    this.userForm = this.formBuilder.group({
+      userId: [this.userContext.getUserId(), Validators.required],
+      userName: [this.userContext.getUserName(), Validators.required],
+      roles: [this.userContext.getUserRoles(), Validators.required]
+    });
   }
 
   ngOnInit(): void {
     this.loadUpcoming();
+    this.loadTenants();
   }
 
   submit(): void {
@@ -84,5 +112,39 @@ export class AppComponent implements OnInit {
         this.errorMessage = 'Unable to load upcoming appointments.';
       }
     });
+  }
+
+  private loadTenants(): void {
+    this.tenantService.getTenants().subscribe({
+      next: (tenants) => {
+        this.tenants = tenants;
+      },
+      error: () => {
+        this.errorMessage = 'Unable to load tenant catalog.';
+      }
+    });
+  }
+
+  updateTenant(): void {
+    if (this.tenantForm.invalid) {
+      this.tenantForm.markAllAsTouched();
+      return;
+    }
+
+    this.tenantContext.setTenantId(this.tenantForm.value.tenantId);
+    this.loadUpcoming();
+  }
+
+  updateUserContext(): void {
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      return;
+    }
+
+    this.userContext.setUserContext(
+      this.userForm.value.userId,
+      this.userForm.value.userName,
+      this.userForm.value.roles
+    );
   }
 }

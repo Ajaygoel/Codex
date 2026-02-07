@@ -26,6 +26,12 @@
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
+.context-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
