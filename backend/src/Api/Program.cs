@@ -41,3 +41,7 @@ app.UseMiddleware<SsoAuthenticationMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}
