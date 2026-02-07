@@ -4,12 +4,21 @@ using DoctorAppointments.Application.Commands;
 using DoctorAppointments.Application.Interfaces;
 using DoctorAppointments.Application.Queries;
 using DoctorAppointments.Infrastructure.Repositories;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Doctor Appointments API",
+        Version = "v1"
+    });
+    options.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date" });
+});
 
 builder.Services.AddSingleton<IAppointmentRepository, InMemoryAppointmentRepository>();
 builder.Services.AddSingleton<ITenantRepository, InMemoryTenantRepository>();
