@@ -1,0 +1,72 @@
+<div class="page">
+  <header class="header">
+    <div>
+      <h1>Doctor Appointment Booking</h1>
+      <p>Capture patient details and an initial diagnosis while scheduling a visit.</p>
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>Request an appointment</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <label>
+          First name
+          <input type="text" formControlName="firstName" />
+        </label>
+        <label>
+          Last name
+          <input type="text" formControlName="lastName" />
+        </label>
+        <label>
+          Date of birth
+          <input type="date" formControlName="dateOfBirth" />
+        </label>
+        <label>
+          Appointment time
+          <input type="datetime-local" formControlName="scheduledFor" />
+        </label>
+      </div>
+
+      <label>
+        Reason for visit
+        <textarea rows="3" formControlName="reason"></textarea>
+      </label>
+
+      <div class="diagnosis">
+        <h3>Initial diagnosis</h3>
+        <label>
+          Summary
+          <input type="text" formControlName="diagnosisSummary" />
+        </label>
+        <label>
+          Notes
+          <textarea rows="3" formControlName="diagnosisNotes"></textarea>
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Submitting…' : 'Submit request' }}
+      </button>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Upcoming appointments</h2>
+    <div class="empty" *ngIf="upcomingAppointments.length === 0">No appointments yet.</div>
+    <ul *ngIf="upcomingAppointments.length > 0">
+      <li *ngFor="let appointment of upcomingAppointments">
+        <div>
+          <strong>{{ appointment.patientName }}</strong>
+          <span class="badge">{{ appointment.status }}</span>
+        </div>
+        <div>{{ appointment.scheduledFor | date: 'medium' }}</div>
+        <div class="muted">Reason: {{ appointment.reason }}</div>
+        <div class="muted" *ngIf="appointment.initialDiagnosisSummary">
+          Diagnosis: {{ appointment.initialDiagnosisSummary }}
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
