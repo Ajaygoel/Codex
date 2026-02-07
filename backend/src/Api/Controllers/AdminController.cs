@@ -1,4 +1,5 @@
-using DoctorAppointments.Application.Services;
+using DoctorAppointments.Application.Interfaces;
+using DoctorAppointments.Application.Queries;
 using DoctorAppointments.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +9,17 @@ namespace DoctorAppointments.Api.Controllers;
 [Route("api/admin")]
 public sealed class AdminController : ControllerBase
 {
-    private readonly TenantService _tenantService;
+    private readonly IQueryHandler<GetTenants, IReadOnlyList<Tenant>> _getTenantsHandler;
 
-    public AdminController(TenantService tenantService)
+    public AdminController(IQueryHandler<GetTenants, IReadOnlyList<Tenant>> getTenantsHandler)
     {
-        _tenantService = tenantService;
+        _getTenantsHandler = getTenantsHandler;
     }
 
     [HttpGet("tenants")]
     public async Task<ActionResult<IReadOnlyList<Tenant>>> GetTenants(CancellationToken cancellationToken)
     {
-        var tenants = await _tenantService.GetAllAsync(cancellationToken);
+        var tenants = await _getTenantsHandler.HandleAsync(new GetTenants(), cancellationToken);
         return Ok(tenants);
     }
 }

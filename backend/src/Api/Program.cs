@@ -1,7 +1,8 @@
 using DoctorAppointments.Api.Authentication;
 using DoctorAppointments.Api.Services;
+using DoctorAppointments.Application.Commands;
 using DoctorAppointments.Application.Interfaces;
-using DoctorAppointments.Application.Services;
+using DoctorAppointments.Application.Queries;
 using DoctorAppointments.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +13,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IAppointmentRepository, InMemoryAppointmentRepository>();
 builder.Services.AddSingleton<ITenantRepository, InMemoryTenantRepository>();
-builder.Services.AddSingleton<TenantService>();
-builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<ICommandHandler<RequestAppointment, Application.Models.AppointmentSummary>, RequestAppointmentHandler>();
+builder.Services.AddScoped<IQueryHandler<GetUpcomingAppointments, IReadOnlyList<Application.Models.AppointmentSummary>>, GetUpcomingAppointmentsHandler>();
+builder.Services.AddScoped<IQueryHandler<GetTenants, IReadOnlyList<Domain.Entities.Tenant>>, GetTenantsHandler>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantProvider, HttpContextTenantProvider>();
 builder.Services.AddScoped<IUserContext, HttpContextUserContext>();

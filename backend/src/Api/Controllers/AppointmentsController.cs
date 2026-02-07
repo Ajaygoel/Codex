@@ -1,5 +1,7 @@
+using DoctorAppointments.Application.Commands;
 using DoctorAppointments.Application.Interfaces;
 using DoctorAppointments.Application.Models;
+using DoctorAppointments.Application.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoctorAppointments.Api.Controllers;
@@ -8,17 +10,21 @@ namespace DoctorAppointments.Api.Controllers;
 [Route("api/appointments")]
 public sealed class AppointmentsController : ControllerBase
 {
-    private readonly IAppointmentService _appointmentService;
+    private readonly IQueryHandler<GetUpcomingAppointments, IReadOnlyList<AppointmentSummary>> _getUpcomingHandler;
+    private readonly ICommandHandler<RequestAppointment, AppointmentSummary> _requestHandler;
 
-    public AppointmentsController(IAppointmentService appointmentService)
+    public AppointmentsController(
+        IQueryHandler<GetUpcomingAppointments, IReadOnlyList<AppointmentSummary>> getUpcomingHandler,
+        ICommandHandler<RequestAppointment, AppointmentSummary> requestHandler)
     {
-        _appointmentService = appointmentService;
+        _getUpcomingHandler = getUpcomingHandler;
+        _requestHandler = requestHandler;
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AppointmentSummary>>> GetUpcoming(CancellationToken cancellationToken)
     {
-        var appointments = await _appointmentService.GetUpcomingAsync(cancellationToken);
+        var appointments = await _getUpcomingHandler.HandleAsync(new GetUpcomingAppointments(), cancellationToken);
         return Ok(appointments);
     }
 
@@ -27,7 +33,7 @@ public sealed class AppointmentsController : ControllerBase
         [FromBody] AppointmentRequest request,
         CancellationToken cancellationToken)
     {
-        var appointment = await _appointmentService.RequestAsync(request, cancellationToken);
+        var appointment = await _requestHandler.HandleAsync(new RequestAppointment(request), cancellationToken);
         return CreatedAtAction(nameof(GetUpcoming), new { id = appointment.AppointmentId }, appointment);
     }
 }
