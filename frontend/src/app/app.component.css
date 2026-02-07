@@ -1,0 +1,118 @@
+:host {
+  font-family: 'Segoe UI', sans-serif;
+  color: #1f2937;
+}
+
+.page {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.panel {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.context-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+button {
+  margin-top: 16px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.diagnosis {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+li {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #b91c1c;
+  margin-top: 12px;
+}
+
+.empty {
+  color: #6b7280;
+}

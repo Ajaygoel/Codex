@@ -1,0 +1,18 @@
+<section class="panel">
+  <h2>Doctor dashboard</h2>
+  <p class="muted">Upcoming appointments for the selected tenant.</p>
+  <div class="empty" *ngIf="appointments.length === 0">No appointments scheduled.</div>
+  <ul *ngIf="appointments.length > 0">
+    <li *ngFor="let appointment of appointments">
+      <div class="row">
+        <strong>{{ appointment.patientName }}</strong>
+        <span class="badge">{{ appointment.status }}</span>
+      </div>
+      <div>{{ appointment.scheduledFor | date: 'medium' }}</div>
+      <div class="muted">Reason: {{ appointment.reason }}</div>
+      <div class="muted" *ngIf="appointment.initialDiagnosisSummary">
+        Diagnosis: {{ appointment.initialDiagnosisSummary }}
+      </div>
+    </li>
+  </ul>
+</section>

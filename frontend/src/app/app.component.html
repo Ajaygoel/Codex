@@ -1,0 +1,86 @@
+<div class="page">
+  <header class="header">
+    <div>
+      <h1>Doctor Appointment Booking</h1>
+      <p>Capture patient details, initial diagnosis, and manage multi-tenant access.</p>
+    </div>
+  </header>
+
+  <section class="panel context-panel">
+    <h2>SSO & tenant context</h2>
+    <div class="grid">
+      <form [formGroup]="tenantForm" (ngSubmit)="updateTenant()">
+        <label>
+          Active tenant ID
+          <input type="text" formControlName="tenantId" />
+        </label>
+        <button type="submit">Switch tenant</button>
+      </form>
+      <form [formGroup]="userForm" (ngSubmit)="updateUserContext()">
+        <label>
+          User ID
+          <input type="text" formControlName="userId" />
+        </label>
+        <label>
+          User name
+          <input type="text" formControlName="userName" />
+        </label>
+        <label>
+          Roles (comma separated)
+          <input type="text" formControlName="roles" />
+        </label>
+        <button type="submit">Update user</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Request an appointment</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <label>
+          First name
+          <input type="text" formControlName="firstName" />
+        </label>
+        <label>
+          Last name
+          <input type="text" formControlName="lastName" />
+        </label>
+        <label>
+          Date of birth
+          <input type="date" formControlName="dateOfBirth" />
+        </label>
+        <label>
+          Appointment time
+          <input type="datetime-local" formControlName="scheduledFor" />
+        </label>
+      </div>
+
+      <label>
+        Reason for visit
+        <textarea rows="3" formControlName="reason"></textarea>
+      </label>
+
+      <div class="diagnosis">
+        <h3>Initial diagnosis</h3>
+        <label>
+          Summary
+          <input type="text" formControlName="diagnosisSummary" />
+        </label>
+        <label>
+          Notes
+          <textarea rows="3" formControlName="diagnosisNotes"></textarea>
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Submitting…' : 'Submit request' }}
+      </button>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </section>
+
+  <app-doctor-dashboard [appointments]="upcomingAppointments"></app-doctor-dashboard>
+
+  <app-admin-portal [tenants]="tenants"></app-admin-portal>
+</div>
