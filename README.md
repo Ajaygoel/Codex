@@ -16,6 +16,50 @@ frontend/
   src/             # Angular application
 ```
 
+## Build steps
+
+### Backend
+
+```bash
+cd backend
+# dotnet restore
+# dotnet build
+```
+
+### Frontend
+
+```bash
+cd frontend
+# npm install
+# npm run build
+```
+
+## Run instructions
+
+### Backend
+
+```bash
+cd backend
+# dotnet run --project src/Api/Api.csproj
+```
+
+### Frontend
+
+```bash
+cd frontend
+# npm start
+```
+
+> The current defaults assume the API runs on `http://localhost:5000`.
+
+## Code conventions
+
+- Keep API controllers thin: delegate work to application services and keep endpoints focused on HTTP concerns.
+- Model core business logic in the Domain layer; avoid leaking persistence or transport types into Domain.
+- Use dependency injection for application services and repository abstractions.
+- Prefer explicit DTOs at the application boundary (API <-> Application, Application <-> Frontend).
+- Name components/services with their feature intent (e.g., `AppointmentService`, `AdminPortalComponent`).
+
 ## Backend overview (.NET)
 
 - **Domain**: Entities (`Appointment`, `Patient`) and value objects (`Diagnosis`) live here.
@@ -28,26 +72,6 @@ frontend/
 - **Models**: Shared TypeScript types for appointments.
 - **Services**: `AppointmentService` encapsulates API interaction.
 - **Components**: `AppComponent` includes a booking form, tenant/user context controls, a doctor dashboard, and an admin portal.
-
-## Running locally (requires tooling installed)
-
-### Backend
-
-```bash
-cd backend
-# dotnet restore
-# dotnet run --project src/Api/Api.csproj
-```
-
-### Frontend
-
-```bash
-cd frontend
-# npm install
-# npm start
-```
-
-> The current defaults assume the API runs on `http://localhost:5000`.
 
 ## Multi-tenant & SSO headers
 
