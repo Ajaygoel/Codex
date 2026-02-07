@@ -4,41 +4,25 @@ using DoctorAppointments.Domain.Entities;
 using DoctorAppointments.Domain.Enums;
 using DoctorAppointments.Domain.ValueObjects;
 
-namespace DoctorAppointments.Application.Services;
+namespace DoctorAppointments.Application.Commands;
 
-public sealed class AppointmentService : IAppointmentService
+public sealed class RequestAppointmentHandler : ICommandHandler<RequestAppointment, AppointmentSummary>
 {
     private readonly IAppointmentRepository _repository;
     private readonly ITenantProvider _tenantProvider;
 
-    public AppointmentService(IAppointmentRepository repository, ITenantProvider tenantProvider)
+    public RequestAppointmentHandler(IAppointmentRepository repository, ITenantProvider tenantProvider)
     {
         _repository = repository;
         _tenantProvider = tenantProvider;
     }
 
-    public async Task<IReadOnlyList<AppointmentSummary>> GetUpcomingAsync(CancellationToken cancellationToken)
-    {
-        var tenantId = _tenantProvider.GetTenantId();
-        var appointments = await _repository.GetUpcomingAsync(tenantId, cancellationToken);
-
-        return appointments
-            .Select(appointment => new AppointmentSummary(
-                appointment.Id,
-                appointment.PatientId,
-                appointment.PatientName,
-                appointment.ScheduledFor,
-                appointment.Reason,
-                appointment.Status.ToString(),
-                appointment.InitialDiagnosis?.Summary))
-            .ToList();
-    }
-
-    public async Task<AppointmentSummary> RequestAsync(AppointmentRequest request, CancellationToken cancellationToken)
+    public async Task<AppointmentSummary> HandleAsync(RequestAppointment command, CancellationToken cancellationToken)
     {
         var tenantId = _tenantProvider.GetTenantId();
         var patientId = Guid.NewGuid();
         var appointmentId = Guid.NewGuid();
+        var request = command.Request;
         var diagnosis = request.InitialDiagnosis is null
             ? null
             : new Diagnosis(
