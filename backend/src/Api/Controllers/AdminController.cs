@@ -1,3 +1,4 @@
+using DoctorAppointments.Api.Models.Admin;
 using DoctorAppointments.Application.Interfaces;
 using DoctorAppointments.Application.Queries;
 using DoctorAppointments.Domain.Entities;
@@ -17,9 +18,12 @@ public sealed class AdminController : ControllerBase
     }
 
     [HttpGet("tenants")]
-    public async Task<ActionResult<IReadOnlyList<Tenant>>> GetTenants(CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<TenantDto>>> GetTenants(CancellationToken cancellationToken)
     {
         var tenants = await _getTenantsHandler.HandleAsync(new GetTenants(), cancellationToken);
-        return Ok(tenants);
+        var response = tenants.Select(MapTenant).ToList();
+        return Ok(response);
     }
+
+    private static TenantDto MapTenant(Tenant tenant) => new(tenant.Id, tenant.Name, tenant.Region);
 }
